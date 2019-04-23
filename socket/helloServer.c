@@ -1,17 +1,17 @@
-//server ¸¸µé±â
+//server ë§Œë“¤ê¸°
 
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-//³×Æ®¿öÅ©
-#include <arpa/inet.h> // ¼ÒÄÏ»ç¿ë½Ã ÇÊ¿ä
+//ë„¤íŠ¸ì›Œí¬
+#include <arpa/inet.h> // ì†Œì¼“ì‚¬ìš©ì‹œ í•„ìš”
 #include <sys/socket.h> 
 
 
 
-//error ¸Ş½ÃÁö Ãâ·ÂÇÔ¼ö
+//error ë©”ì‹œì§€ ì¶œë ¥í•¨ìˆ˜
 void error_handling(char *message)
 {
 	fputs(message, stderr);
@@ -31,45 +31,45 @@ int main(int argc, char* argv[])
 	char message[] = "Hello World!";
 
 
-	if (argc != 2) //2°³ÀÇ ÀÎÀÚ¸¦ ¹ŞÀ»°Í
+	if (argc != 2) //2ê°œì˜ ì¸ìë¥¼ ë°›ì„ê²ƒ
 	{
-		// ¹Ş¾Æ¾ßÇÒ ÀÎÀÚ
+		// ë°›ì•„ì•¼í•  ì¸ì
 		// ./helloClient [PORT_NUM]
 		printf("Usage : %s <PORT>\n", argv[0]);
 		exit(1);
 	}
 
-	//STEP 1. socketÀ» »ı¼ºÇÑ´Ù. fileÀÇ open°ú µ¿ÀÏ
+	//STEP 1. socketì„ ìƒì„±í•œë‹¤. fileì˜ openê³¼ ë™ì¼
 
 	// PF_INET : IP v4
 	// SOCK_STREAM : TCP
-	//IPPROTO_TCP : TCP »ç¿ë ÇÏÁö¸¸ ¾Õ¿¡ SCOK_STREAMÀ¸·Î TCP¸¦ Á¤ÀÇÇßÀ¸¹Ç·Î 0À» Àû¾îµµ µÈ´Ù
+	//IPPROTO_TCP : TCP ì‚¬ìš© í•˜ì§€ë§Œ ì•ì— SCOK_STREAMìœ¼ë¡œ TCPë¥¼ ì •ì˜í–ˆìœ¼ë¯€ë¡œ 0ì„ ì ì–´ë„ ëœë‹¤
 	serv_sock = socket(PF_INET, SOCK_STREAM, 0);
 	if (serv_sock == -1)
 		error_handling("socket() error");
 
 
-	//STEP 2. Á¢¼ÓÇÒ ¼­¹öÀÇ IPÁÖ¼Ò , Æ÷Æ®¹øÈ£, ÇÁ·ÎÅäÄİÀ» Á¤ÀÇ
-	//struct sockaddr_in »ç¿ë
+	//STEP 2. ì ‘ì†í•  ì„œë²„ì˜ IPì£¼ì†Œ , í¬íŠ¸ë²ˆí˜¸, í”„ë¡œí† ì½œì„ ì •ì˜
+	//struct sockaddr_in ì‚¬ìš©
 
-	//±¸Á¶Ã¼ ÃÊ±âÈ­
+	//êµ¬ì¡°ì²´ ì´ˆê¸°í™”
 	memset(&serv_addr, 0, sizeof(serv_addr));
 
 	//ip v4 address family
 	serv_addr.sin_family = AF_INET;
 
-	//ÁÖ¼Ò ÁöÁ¤
-	//htonl (ÀÚ±âÀÚ½ÅÀÇ ipÁÖ¼Ò¸¦ ¹Ş¾Æ¿È)
+	//ì£¼ì†Œ ì§€ì •
+	//htonl (ìê¸°ìì‹ ì˜ ipì£¼ì†Œë¥¼ ë°›ì•„ì˜´)
 	serv_addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 
-	//Æ÷Æ® ¹øÈ£ ÁöÁ¤
-	//¹®ÀÚ¿­ Æ÷Æ®¹øÈ£¸¦ Á¤¼ö·Î º¯È¯ÈÄ
-	//htons = host to network ·Î port¹øÈ£ º¯È¯ÇÏ´Âµ¥ short·Î º¯È¯
+	//í¬íŠ¸ ë²ˆí˜¸ ì§€ì •
+	//ë¬¸ìì—´ í¬íŠ¸ë²ˆí˜¸ë¥¼ ì •ìˆ˜ë¡œ ë³€í™˜í›„
+	//htons = host to network ë¡œ portë²ˆí˜¸ ë³€í™˜í•˜ëŠ”ë° shortë¡œ ë³€í™˜
 	serv_addr.sin_port = htons(atoi(argv[1]));
 
-	//STEP 3. BIND ¼­¹ö¿¡¼­´Â ÀÌ°úÁ¤ÀÌ Ãß°¡µÊ
-	//bind : ÀÚ±â ½º½º·ÎÀÇ ip¿Í port¸¦ set up ÇØµÎ´Â ÀÛ¾÷ÀÌ´Ù
+	//STEP 3. BIND ì„œë²„ì—ì„œëŠ” ì´ê³¼ì •ì´ ì¶”ê°€ë¨
+	//bind : ìê¸° ìŠ¤ìŠ¤ë¡œì˜ ipì™€ portë¥¼ set up í•´ë‘ëŠ” ì‘ì—…ì´ë‹¤
 
 	if (bind(serv_sock, (struct sockaddr*) &serv_addr, sizeof(serv_addr)) == -1)
 		error_handling("bind() error");
@@ -77,29 +77,29 @@ int main(int argc, char* argv[])
 
 
 	//STEP 4. listen
-	// serv_sock : ÇöÀç ¼­¹öÀÇ fd
-	// 5: ´ë±â(µ¿½ÃÁ¢¼Ó)ÇÒ¼ö ÀÖ´Â client ÀÇ °¹¼ö bufferÀÇ Å©±â (5°³ÀÇ Å¬¶óÀÌ¾ğÆ®¸¸ Á¢¼Ó°¡´ÉÇÑ°Ô ¾Æ´Ô)
+	// serv_sock : í˜„ì¬ ì„œë²„ì˜ fd
+	// 5: ëŒ€ê¸°(ë™ì‹œì ‘ì†)í• ìˆ˜ ìˆëŠ” client ì˜ ê°¯ìˆ˜ bufferì˜ í¬ê¸° (5ê°œì˜ í´ë¼ì´ì–¸íŠ¸ë§Œ ì ‘ì†ê°€ëŠ¥í•œê²Œ ì•„ë‹˜)
 
 	if (listen(serv_sock, 5) == -1)
 		error_handling("listen() error");
 
-	//clnt_addr ÀÇ Å©±â È®ÀÎ
+	//clnt_addr ì˜ í¬ê¸° í™•ì¸
 	clnt_addr_size = sizeof(clnt_addr);
 	clnt_sock = accept(serv_sock, (struct sockaddr *) & clnt_addr, &clnt_addr_size);
 
 	if (clnt_sock == -1)
 		error_handling("accept() error");
 
-	// STEP 5. µ¥ÀÌÅÍ ¼Û½Å
-	//write ¸¦ »ç¿ëÇÏ¿© clnt_sock¿¡ µ¥ÀÌÅÍ¸¦ ¼Û½Å
+	// STEP 5. ë°ì´í„° ì†¡ì‹ 
+	//write ë¥¼ ì‚¬ìš©í•˜ì—¬ clnt_sockì— ë°ì´í„°ë¥¼ ì†¡ì‹ 
 
 	write(clnt_sock, message, sizeof(message));
 
-	//¼­¹öÀÇ ¼ÒÄÏÀ» ¸ÕÀú ´İÀ» °æ¿ìbind()¿¡·¯°¡ ¹ß»ıÇÒ ¼ö ÀÖ´Ù.
-	//Å¬¶óÀÌ¾ğÆ®º¸´Ù ´Ê°Ô ¼ÒÄÏÀ» Á¾·áÇÏ±â À§ÇØ sleep!
+	//ì„œë²„ì˜ ì†Œì¼“ì„ ë¨¼ì € ë‹«ì„ ê²½ìš°bind()ì—ëŸ¬ê°€ ë°œìƒí•  ìˆ˜ ìˆë‹¤.
+	//í´ë¼ì´ì–¸íŠ¸ë³´ë‹¤ ëŠ¦ê²Œ ì†Œì¼“ì„ ì¢…ë£Œí•˜ê¸° ìœ„í•´ sleep!
 	sleep(2);
 
-	//STEP 5. ¼ÒÄÏ Á¾·á
+	//STEP 5. ì†Œì¼“ ì¢…ë£Œ
 	close(clnt_sock);
 	close(serv_sock);
 
@@ -107,3 +107,4 @@ int main(int argc, char* argv[])
 
 
 }
+//
