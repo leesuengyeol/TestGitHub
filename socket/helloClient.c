@@ -73,10 +73,11 @@ int main(int argc, char* argv[])
 		error_handling("connect() error!");
 		
 	}
+
 	
+
 	// STEP 4. 데이터 수신
 	//read함수 사용 sizeof -1 은 널문자는 가져오지 않음
-	
 	str_len = read(sock, message, sizeof(message) -1);
 	if(str_len == -1)
 			error_handling("read() error!");

@@ -1,5 +1,19 @@
 //server 만들기
 
+/* sockaddr_in 구조체 : AF_INET인 경우
+
+struct sockaddr_in {
+	short    sin_family;          // 주소 체계: AF_INET
+	u_short  sin_port;            // 16 비트 포트 번호, network byte order
+	struct   in_addr  sin_addr;   // 32 비트 IP 주소
+	char     sin_zero[8];         // 전체 크기를 16 비트로 맞추기 위한 dummy
+};
+
+struct  in_addr {
+	u_long  s_addr;     // 32비트 IP 주소를 저장 할 구조체, network byte order
+};
+
+*/
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -87,8 +101,12 @@ int main(int argc, char* argv[])
 	clnt_addr_size = sizeof(clnt_addr);
 	clnt_sock = accept(serv_sock, (struct sockaddr *) & clnt_addr, &clnt_addr_size);
 
+
 	if (clnt_sock == -1)
 		error_handling("accept() error");
+
+	//클라이언트 주소 확인  inet_ntoa
+	printf("Client Addr : %s\n", inet_ntoa(clnt_addr.sin_addr));
 
 	// STEP 5. 데이터 송신
 	//write 를 사용하여 clnt_sock에 데이터를 송신
